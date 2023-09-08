@@ -1,0 +1,536 @@
+/*................................................*/
+/* A Program For TODO_LIST in C Langage 	      */
+/* 		 d..$!ng#                                 */
+/*		14-oct-2020                               */
+/*------------------------------------------------*/
+/* Name -    Deepak Kumar                         */
+/* Roll No - 196304                               */
+/* Reg. No - 194630071 			  	  */
+/*................................................*/
+#include<stdio.h>
+#include<conio.h>
+#include<graphics.h>
+#include<dos.h>
+#define MAX_NO 100
+union REGS i,o,in,out;
+// Function Decleration
+void first_screen();
+void header();
+void ribbon();
+void mouse_ribbon();
+void exit_screen();
+void add_task_screen();
+void limit_task();
+void view_task();
+void remove_task();
+void remove_mouse();
+void file_delete_messege();
+//Task Function Decleration
+struct task
+{
+	char date[20];
+	char tasks[MAX_NO];
+
+}t[100];
+//Global Decleration of Some Variable
+int i_t=0,j=1;
+char ch;
+int yp=0,xp=0;
+/* Mouse */
+int initialize_mouse()
+{
+    i.x.ax=0;
+    int86(0x33,&i,&o);
+    return 0;
+}
+int show_mouse()
+{
+    i.x.ax=1;
+    int86(0x33,&i,&o);
+    return 0;
+}
+int get_mouse()
+{
+    i.x.ax=3;
+    int86(0x33,&i,&o);
+    return 0;
+}
+void main()
+{
+	int gd = DETECT, gm ;
+	initgraph(&gd, &gm,"C:\\turboc3\\bgi");
+	setbkcolor(1);
+	first_screen();
+	sound(800);
+	//Outline
+	setlinestyle(0,0,3);
+	setcolor(5);
+	rectangle(0,0,639,478);
+	header();
+	nosound();
+	ribbon();
+	closegraph();
+	exit();
+}
+//First Screen
+void first_screen()
+{       int pb,t=10;
+	setlinestyle(0,0,3);
+	//Left Top
+	setcolor(14);
+	circle(12,20,50);
+	setfillstyle(1,5);
+	floodfill(11,19,14);
+	//Left Bottom
+	circle(12,460,50);
+	setfillstyle(1,5);
+	floodfill(13,450,14);
+	//Right Top
+	circle(610,12,50);
+	setfillstyle(1,5);
+	floodfill(611,12,14);
+      //  Right Bottom
+	circle(610,460,50);
+	setfillstyle(1,5);
+	floodfill(611,459,14);
+	//Top Line
+	setcolor(14);
+	line(60,15,560,15);
+	line(60,20,560,20);
+	//Left Line
+	setcolor(14);
+	line(15,70,15,410);
+	line(20,70,20,410);
+	//Bottom Line
+	setcolor(14);
+	line(60,455,560,455);
+	line(60,460,560,460);
+	//Right Line
+	setcolor(14);
+	line(620,62,620,410);
+	line(625,62,625,413);
+	//Pattern
+	setfillstyle(8,12);
+	floodfill(50,100,14);
+	//Logo
+	setcolor(15);
+	circle(320,240,80);
+	circle(320,240,85);
+	setfillstyle(1,10);
+	floodfill(320,240,15);
+	setcolor(9);
+	settextstyle(1,0,7);
+	outtextxy(250,200,"ToDo");
+	setcolor(8);
+	setlinestyle(0,0,1);
+	line(250,270,389,270);
+	line(280,275,359,275);
+	line(310,280,329,280);
+	//Progresss Bar
+	setcolor(15);
+	setlinestyle(0,0,3);
+	rectangle(250,340,390,360);
+	setfillstyle(1,9);
+	for(pb=287;pb<400;pb+=20){delay(500);sound(800+pb);setfillstyle(1,9);
+	bar(252,342,pb,358);setlinestyle(0,0,1);rectangle(310,366,345,385);
+	setfillstyle(1,3);bar(311,367,344,384);
+	gotoxy(40,24);printf("%d%%",t);t+=18;
+	if(pb==400){break;} }
+	nosound();
+	delay(100);
+	cleardevice();
+}
+//Header Function
+void header()
+{
+	setcolor(8);
+	rectangle(0,0,639,36);
+	setfillstyle(1,14);
+	bar(2,2,637,34);
+	setcolor(4);
+	settextstyle(7,0,4);
+	outtextxy(250,0,"To Do List...");
+	outtextxy(251,0,"To Do List...");
+}
+//Ribbon Function
+void ribbon()
+{
+	setcolor(6);
+	setlinestyle(0,0,2);
+	rectangle(0,38,639,70);
+	setfillstyle(1,3);
+	bar(1,39,638,69);
+	//1st Box
+	setcolor(1);
+	settextstyle(7,0,3);
+	outtextxy(40,39,"Add Task");
+	//2nd Box
+	setcolor(1);
+	settextstyle(7,0,3);
+	outtextxy(190,39,"View Task");
+	//3rd Box
+	setcolor(1);
+	settextstyle(7,0,3);
+	outtextxy(350,39,"Remove Task");
+	//4th Box
+	setcolor(1);
+	settextstyle(7,0,3);
+	outtextxy(550,39,"Exit");
+	mouse_ribbon();
+}
+/* Mouse Detection for login menu */
+void mouse_ribbon()
+{
+	initialize_mouse();
+	show_mouse();
+       while(1)
+       {
+		 o.x.bx=0;
+		 show_mouse();
+		 get_mouse();
+	       if(o.x.bx==1&&o.x.cx<160&&o.x.cx>30&&o.x.dx<69&&o.x.dx>39)
+	       {
+			//1st Box
+			sound(999);
+			setfillstyle(1,14);
+			bar(30,39,160,69);
+			setcolor(1);
+			settextstyle(7,0,3);
+			outtextxy(40,39,"Add Task");
+			delay(250);
+			nosound();
+			delay(250);
+			add_task_screen();
+		}
+	       if(o.x.bx==1&&o.x.cx<320&&o.x.cx>180&&o.x.dx<69&&o.x.dx>39)
+	       {
+			//2nd Box
+			sound(999);
+			setfillstyle(1,14);
+			bar(180,39,320,69);
+			setcolor(1);
+			settextstyle(7,0,3);
+			outtextxy(190,39,"View Task");
+			nosound();
+			delay(250);
+			view_task();
+		}
+	       if(o.x.bx==1&&o.x.cx<520&&o.x.cx>340&&o.x.dx<69&&o.x.dx>39)
+	       {
+			//3rd Box
+			sound(999);
+			setfillstyle(1,14);
+			bar(340,39,520,69);
+			setcolor(1);
+			settextstyle(7,0,3);
+			outtextxy(350,39,"Remove Task");
+			nosound();
+			delay(250);
+		       remove_task();
+		}
+		if(o.x.bx==1&&o.x.cx<610&&o.x.cx>540&&o.x.dx<69&&o.x.dx>39)
+	       {
+			//4th Box
+			sound(999);
+			setcolor(5);
+			setfillstyle(1,14);
+			bar(540,39,610,69);
+			setcolor(1);
+			settextstyle(7,0,3);
+			outtextxy(550,39,"Exit");
+			nosound();
+			delay(250);
+			cleardevice();
+			exit_screen();
+		}
+      }
+}
+//Add Task Screen Function
+void add_task_screen()
+{
+	FILE *fp;
+	fp=fopen("todo.txt","a");
+	if(fp==NULL)
+	{
+		printf("Error In File Opening");
+		getch();
+		exit();
+	}
+	fflush(stdin);
+	gotoxy(2,6);
+	printf("Enter Date(DD/MM/YY) : ");
+	setcolor(15);
+	line(2,100,180,100);
+	gotoxy(2,8);
+	printf("Enter Task's : ");
+	line(2,130,120,130);
+	gotoxy(25,6);
+	gets(t[i_t].date);
+	fprintf(fp,"  ++++++++++++++++++++\n");
+	fprintf(fp,"      %s\n",t[i_t].date);
+	fprintf(fp,"  ++++++++++++++++++++\n");
+	yp=10;xp=2;j=1;
+	gotoxy(2,10);
+	for(i_t=0;i_t<100;i_t++)
+	{
+		if(i_t<8)
+		{
+			fflush(stdin);
+			xp=2;
+			printf("[%d.]    ",j);
+			gets(t[i_t].tasks);
+			fflush(stdin);
+			gotoxy(xp+=5,yp+=1);
+			printf("Add More Task's Press Y/N");
+			printf("\n");
+			ch=getche();
+				if( ch =='n'&&'N'&&i_t<9)
+				{
+					for(i_t=0;i_t<8;i_t++)
+					{
+					fprintf(fp,"    [%d.]     %s\n",i_t+1,t[i_t].tasks);
+					}
+					cleardevice();
+					header();
+					ribbon();
+					fflush(stdin);
+					break;
+				}
+		 }
+		else
+	       {
+			for(i_t=0;i_t<8;i_t++)
+			{
+				fprintf(fp,"    [%d.]     %s\n",i_t+1,t[i_t].tasks);
+			}
+			limit_task();
+		}
+		    yp++;
+		   j++;
+	}
+	fclose(fp);
+}
+// Task Limitation Messege Function
+void limit_task()
+{
+	sound(800);
+	setcolor(15);
+	setlinestyle(0,0,3);
+	rectangle(150,165,550,220);
+	setfillstyle(1,8);
+	bar(152,167,548,218);
+	setcolor(14);
+	settextstyle(7,0,2);
+	outtextxy(175,170,"You Have Added The Maximum ");
+	outtextxy(255,190," Work For A Day");
+	setcolor(14);
+	settextstyle(7,0,2);
+	outtextxy(175,170,"You Have Added The Maximum ");
+	outtextxy(255,190," Work For A Day");
+	delay(1000);
+	nosound();
+	cleardevice();
+	header();
+	ribbon();
+}
+//View Task Function
+void view_task()
+{
+
+	char ch1;
+	FILE *fp;
+	fp=fopen("todo.txt","r");
+	if(fp==NULL)
+	{
+		printf("Error In File Opening");
+		getch();
+		exit();
+	}
+	fflush(stdout);
+	gotoxy(3,6);
+	printf("\t\t\t\t Your Task's Are : -\n\n");
+	setcolor(14);
+	line(250,98,425,98);
+	line(250,102,425,102);
+	while(1)
+	{
+	      ch1=fgetc(fp);
+	      if(ch1==EOF)
+		break;
+	      else{
+	      gotoxy(xp,yp);
+	      delay(20);
+	      printf("%c",ch1);
+	      sound(700);
+	      yp++;
+	      nosound();}
+	}
+	//
+	delay(10000);
+	fclose(fp);
+	cleardevice();
+	header();
+	ribbon();
+}
+//Remove Task Function
+void remove_task()
+{
+
+	setcolor(14);
+	setlinestyle(0,0,3);
+	rectangle(100,110,565,200);
+	setfillstyle(1,15);
+	floodfill(112,113,14);
+	setcolor(12);
+	settextstyle(8,0,3);
+	outtextxy(150,120,"Your All Task's Are Deleated.");
+	outtextxy(151,120,"Your All Task's Are Deleated.");
+	setcolor(12);
+	rectangle(230,165,300,195);
+	setfillstyle(8,5);
+	floodfill(233,168,12);
+	setcolor(14);
+	settextstyle(8,0,3);
+	outtextxy(250,160,"Ok");
+	setcolor(12);
+	rectangle(350,165,440,195);
+	setfillstyle(8,5);
+	floodfill(353,168,12);
+	setcolor(14);
+	settextstyle(8,0,2);
+	outtextxy(360,162,"Cancel");
+	outtextxy(360,162,"Cancel");
+	remove_mouse();
+}
+void remove_mouse()
+{
+	initialize_mouse();
+	show_mouse();
+       while(1)
+       {
+		 o.x.bx=0;
+		 show_mouse();
+		 get_mouse();
+	       if(o.x.bx==1&&o.x.cx<300&&o.x.cx>230&&o.x.dx<195&&o.x.dx>165)
+	       {
+			//Ok Button
+			sound(999);
+			setcolor(8);
+			rectangle(230,165,300,195);
+			setfillstyle(8,5);
+			floodfill(233,168,8);
+			setcolor(14);
+			settextstyle(8,0,3);
+			outtextxy(250,160,"Ok");
+			delay(100);
+			nosound();
+			delay(50);
+			cleardevice();
+		       //	remove("todo.txt");
+		      //	header();
+		       //	ribbon();
+			file_delete_messege();
+		}
+	       if(o.x.bx==1&&o.x.cx<440&&o.x.cx>350&&o.x.dx<195&&o.x.dx>165)
+	       {
+			//Cancel Button
+			sound(999);
+			setcolor(8);
+			rectangle(350,165,440,195);
+			setfillstyle(8,5);
+			floodfill(353,168,8);
+			setcolor(14);
+			settextstyle(8,0,2);
+			outtextxy(360,162,"Cancel");
+			outtextxy(360,162,"Cancel");
+			delay(100);
+			nosound();
+			delay(250);
+			cleardevice();
+			header();
+			ribbon();
+	       }
+       }
+}
+void file_delete_messege()
+{
+	setcolor(14);
+	setlinestyle(0,0,3);
+	rectangle(100,110,565,200);
+	setfillstyle(1,15);
+	floodfill(112,113,14);
+	setcolor(12);
+	settextstyle(8,0,3);
+	outtextxy(110,120,"Your All Task's Are Successfully ");
+	outtextxy(111,120,"Your All Task's Are Successfully ");
+	outtextxy(260,145,"Deleated.");
+	outtextxy(261,145,"Deleated.");
+	delay(500);
+	cleardevice();
+	remove("todo.txt");
+	header();
+	ribbon();
+}
+//Exit  Function
+void exit_screen()
+{
+	cleardevice();
+	setcolor(15);
+	setlinestyle(0,0,2);
+	rectangle(109,94,531,306);
+	setfillstyle(1,5);
+	bar(110,95,530,305);
+	rectangle(115,100,525,299);
+	//
+	setfillstyle(1,4);
+	bar(116,102,524,298);
+	settextstyle(1,0,3);
+	setcolor(14);
+	outtextxy(224,100,"Thanks For Using...");
+	outtextxy(225,100,"Thanks For Using...");
+	setcolor(15);
+	line(115,137,525,137);
+	setcolor(2);
+	setlinestyle(0,1,2);
+	setcolor(15);
+	settextstyle(1,0,1);
+	outtextxy(120,142,"Design & Developed By :-");
+	setfillstyle(1,10);
+	bar(116,170,524,203);
+	settextstyle(1,0,4);
+	setcolor(1);
+	outtextxy(185,165," DEEPAK SINGH ");
+	setcolor(1);
+	outtextxy(185,166," DEEPAK SINGH ");
+	outtextxy(185,167," DEEPAK SINGH ");
+	setcolor(1);
+	outtextxy(185,168," DEEPAK SINGH ");
+
+	setcolor(15);
+	settextstyle(7,0,3);
+	outtextxy(120,202,"Contact for more...");
+	line(117,230,335,230);
+
+	setcolor(10);
+	settextstyle(1,0,2);
+	outtextxy(118,237,"Phone :- 9525357044");
+	settextstyle(1,0,2);
+	outtextxy(118,260,"Email :- deepsinghkumar01@gmail.com");
+	setcolor(14);
+	line(170,330,460,330);
+	setcolor(15);
+	settextstyle(1,0,2);
+	outtextxy(210,330,"Exiting please wait !...");
+	setcolor(14);
+	line(170,360,460,360);
+	setcolor(15);
+	settextstyle(1,0,2);
+	outtextxy(265,370,"-d..$!ng#");
+	delay(5000);
+	sound(9999);
+	cleardevice();
+	delay(30);
+	nosound();
+	cleardevice();
+	exit(0);
+}
