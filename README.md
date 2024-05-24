@@ -1,5 +1,5 @@
-# ToDo_List_in_C
-ToDo list app in c programming language using Graphics progrramming and File handling in C.In this app a user can add tasks, max task limit is 8, view their all added task, and remove task. I had created this project in my first semester of BCA by self study from vaious resources of  internet.
+# ToDo List in C
+ToDo list app in C programming language using Graphics programming and File handling in C. In this App a user can add tasks, maximum task limit is 8, view their all added task, and remove tasks. I have created this project in my first semester of BCA by self-study from various resources from internet.
 
 <h3>Splash Screen</h3>
 
